@@ -312,7 +312,8 @@
 
 <script type="text/ecmasript-6">
 import Swiper from 'swiper'
-import 'swiper/swiper-bundle.css'
+// 下面这个css文件老是找不到，不知道为啥，干脆拿出来算了
+import './swiper-bundle.css'
 
   export default{
     mounted(){
