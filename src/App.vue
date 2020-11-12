@@ -13,10 +13,9 @@
   //  async mounted () {
   //     // 千万注意！！！！！！！！！！！！！！！！！  这里的reqAddress函数中的两个请求参数中间不能有空格，一定要注意！！！！！！！！！！！
   //     const result = await reqAddress('116.36867',40.10038)
-  //     console.log(result);
   //   }, 
     mounted(){
-      console.log(this.$store.dispatch('getAddress'))
+      // console.log(this.$store.dispatch('getAddress'))
     },
     components: {
       FooterGuide

@@ -1,39 +1,60 @@
+/* 
+包含n个用于间接更新状态数据的方法的对象
+方法可以包含异步和逻辑处理代码
+*/
 import {
     reqAddress,
-    reqCategories,
+    reqCategorys,
     reqShops
-} from '@/api'
-
-import {
+  } from '@/api'
+  
+  import {
     RECEIVE_ADDRESS,
-    RECEIVE_CATEGORIES,
+    RECEIVE_CATEGORYS,
     RECEIVE_SHOPS
-} from './mutation-types'
-
-
-export default {
-    async getAddress({commit,state}){
-        const {longitude,latitude} = state
-        const result = await reqAddress(longitude,latitude)
-        if (result.code === 0) {
-            const address = result.data
-            console.log(address);
-            commit(RECEIVE_ADDRESS,address)
-        }
+  } from './mutation-types'
+  
+  
+  export default {
+    /* 
+    获取当前地址信息对象的异步action
+    */
+    async getAddress ({commit, state}) {
+      const {longitude, latitude} = state
+      // 发异步请求
+      const result = await reqAddress(longitude, latitude)
+      // 请求成功后, 提交给mutation
+      if (result.code===0) {
+        const address = result.data
+        commit(RECEIVE_ADDRESS, address)
+      }
     },
-    async getShops({commit}){
-        const result = await reqCategories()
-        if (result.code === 0) {
-            const categories = result.data
-            commit(RECEIVE_CATEGORIES,categories)
-        }
+  
+    /* 
+    获取商品分类数组的异步action
+    */
+    async getCategorys ({commit},callback) {
+      // 发异步请求
+      const result = await reqCategorys()
+      // 请求成功后, 提交给mutation
+      if (result.code===0) {
+        const categorys = result.data
+        commit(RECEIVE_CATEGORYS, categorys)
+        typeof callback === 'function' && callback()
+      }
     },
-    async getCategories({commit,state}){
-        const {longitude,latitude} = state
-        const result = await reqShops({longitude,latitude})
-        if (result.code === 0) {
-            const reqShops = result.data
-            commit(RECEIVE_SHOPS,reqShops)
-        }
+  
+    /* 
+    获取商家数组的异步action
+    */
+    async getShops ({commit, state}) {
+      const {longitude, latitude} = state
+      // 发异步请求
+      const result = await reqShops({longitude, latitude})
+      // 请求成功后, 提交给mutation
+      if (result.code===0) {
+        const shops = result.data
+        commit(RECEIVE_SHOPS, shops)
+      }
     }
-}
+  }
