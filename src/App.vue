@@ -15,7 +15,8 @@
   //     const result = await reqAddress('116.36867',40.10038)
   //   }, 
     mounted(){
-      // console.log(this.$store.dispatch('getAddress'))
+      this.$store.dispatch('getAddress')
+      this.$store.dispatch('autoLogin')
     },
     components: {
       FooterGuide

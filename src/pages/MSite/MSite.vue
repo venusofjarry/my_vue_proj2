@@ -104,10 +104,10 @@
 import Swiper from 'swiper'
 // 下面这个css文件老是找不到，不知道为啥，干脆拿出来算了
 import './swiper-bundle.css'
-import {mapState} from 'vuex'
 import _ from 'lodash'
 // 按需引入，这里只需要chunk     注意，lodash.js是将lodash中所有方法汇总了，它内部引入了很多js文件，其中包括chunk，我们可以使用/的方法按需访问
 import chunk from 'lodash/chunk'
+import {mapState} from 'vuex'
 
   export default{
     computed: {
@@ -147,7 +147,7 @@ import chunk from 'lodash/chunk'
     },
 
 
-    mounted(){
+    async mounted(){
       // // 解决swiper轮播不正常的方法方法2：dispatch回调
       // this.$store.dispatch('getCategorys', () => {
       //   // $nextTick方法将回调延迟到下次 DOM 更新循环之后执行，在修改数据之后立即使用它，然后等待 下一次DOM 更新。
@@ -167,7 +167,7 @@ import chunk from 'lodash/chunk'
       this.$store.dispatch('getShops')
 
       // 解决swiper轮播不正常的方法方法3:利用dispatch返回一个promise对象，异步操作(then或者async await都行)
-      this.$store.dispatch('getCategorys')
+      await this.$store.dispatch('getCategorys')
       .then(() => {
         new Swiper(this.$refs.sc1, {
           loop: true, // 循环轮播（无缝轮播）
@@ -176,7 +176,7 @@ import chunk from 'lodash/chunk'
           el: '.swiper-pagination'
           }
         })
-      })
+      });
     },
     
 
