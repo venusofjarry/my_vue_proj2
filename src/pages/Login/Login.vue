@@ -65,7 +65,7 @@
         <i class="iconfont icon-jiantou2"></i>
       </a>
 
-      <button @click="toggleLanguage">切换语言</button>
+      <!-- <button @click="toggleLanguage">切换语言</button> -->
     </div>
   </section>
   
@@ -167,14 +167,14 @@
         this.$refs.captcha.src = 'http://localhost:4000/captcha?time=' + Date.now()
       },
 
-      toggleLanguage () {
-        // 根据当前语言得到新的语言
-        const locale = this.$i18n.locale==='en' ? 'zh_CN' : 'en'
-        // 指定新的语言
-        this.$i18n.locale = locale
-        // 将新的语言保存到local
-        localStorage.setItem('locale_key', locale)
-      }
+      // toggleLanguage () {
+      //   // 根据当前语言得到新的语言
+      //   const locale = this.$i18n.locale==='en' ? 'zh_CN' : 'en'
+      //   // 指定新的语言
+      //   this.$i18n.locale = locale
+      //   // 将新的语言保存到local
+      //   localStorage.setItem('locale_key', locale)
+      // }
     }
   }
 </script>

@@ -6,7 +6,10 @@ import {
     reqAddress,
     reqCategorys,
     reqShops,
-    reqAutoLogin
+    reqAutoLogin,
+    reqShopGoods,
+    reqShopRating,
+    reqShopInfo
   } from '@/api'
   
 import {
@@ -16,6 +19,9 @@ import {
   RECEIVE_USER,
   RECEIVE_TOKEN,
   LOGOUT,
+  RECEIVE_GOODS,
+  RECEIVE_RATING,
+  RECEIVE_INFO
 
 } from './mutation-types'
   
@@ -84,6 +90,30 @@ export default {
     if(result.code===0){
       const user = result.data
       commit(RECEIVE_USER, user)
+    }
+  },
+  async getShopGoods({commit}, cb){
+    const result = await reqShopGoods()
+    if(result.code===0){
+      const goods = result.data
+      commit(RECEIVE_GOODS, goods)
+      typeof cb==='function' && cb()
+    }
+  },
+  async getShopInfo({commit}, cb){
+    const result = await reqShopInfo()
+    if(result.code===0){
+      const info = result.data
+      commit(RECEIVE_INFO, info)
+      typeof cb==='function' && cb()
+    }
+  },
+  async getShopRating({commit}, cb){
+    const result = await reqShopRating()
+    if(result.code===0){
+      const rating = result.data
+      commit(RECEIVE_RATING, rating)
+      typeof cb==='function' && cb()
     }
   }
 }

@@ -35,7 +35,7 @@
       </div>
       <div class="shop_container">
         <ul class="shop_list" v-if="shops.length>0">
-          <li class="shop_li border-1px" v-for="shop in shops" :key="shop.id">
+          <li class="shop_li border-1px" v-for="shop in shops" :key="shop.id" @click="$router.push('/shop')">
             <a>
               <div class="shop_left">
                 <!-- 注意，这里的图片地址要看/有没有衔接好，不要重复/符号或者丢掉/符号，这样的话都拿不到图片 -->

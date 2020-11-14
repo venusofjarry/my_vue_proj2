@@ -5,10 +5,12 @@ import {Button} from 'mint-ui'
 
 import App from './App.vue'
 import router from './router'
+// import i18n from './i18n'
 import Header from './components/Header/Header.vue'
 import store from './vuex/store'
-// 将api文件夹中的所有前后台交互方法，都放在API对象中
+// 将api文件夹中的所有前后台交互方法，都放在API对象中，而不是actions中
 import * as API from './api'
+import './mock/mock-server'
 
 Vue.config.productionTip = false
 
@@ -22,5 +24,6 @@ Vue.component(Button.name, Button)
 new Vue({
   render: h => h(App),
   router, // 所有组件都能看到$router和$route   router-link   router-view
-  store
+  store,
+  // i18n
 }).$mount('#app')

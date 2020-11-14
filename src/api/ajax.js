@@ -11,11 +11,10 @@ import qs from 'qs'
 import { Toast,MessageBox } from 'mint-ui'
 import store from '../vuex/store'
 import router from '@/router'
-import { message } from 'statuses'
 
 const instance = axios.create({
-  // baseURL: 'http://localhost:4000', // 出跨域请求问题
-  baseURL: '/api', // 让代理服务器转发请求4000
+  // baseURL: 'http://localhost:4000', // 不能这样写，因为我们是在发送请求出去之后，才使用proxy解决跨域问题，这里我们正常发请求就好，剩下的交给proxy代理服务器
+  baseURL: '/api', // 让代理服务器转发请求4000   注意，这里不要写localhost:8080，因为有时候我们同时开启多个项目，端口就不一致了，这里不要指定默认端口，让浏览器自己决定
   timeout: 20000 // 4. 配置请求超时的时间
 })
 
