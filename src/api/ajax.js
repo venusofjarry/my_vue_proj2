@@ -21,7 +21,7 @@ const instance = axios.create({
 // 添加请求拦截器
 instance.interceptors.request.use((config) => {
   // 3. 对请求体参数进行urlencode处理, 而不使用默认的json方式(后台接口不支持)
-
+  // console.log(router.currentRoute.path);
   if (config.method.toUpperCase()==='POST' && config.data instanceof Object) {
     config.data = qs.stringify(config.data)
   }

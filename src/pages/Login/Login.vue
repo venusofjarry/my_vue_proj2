@@ -152,7 +152,8 @@
           if (result.code===0) {
             const user = result.data
             // 将user保存到vuex的state.  注意，这里如果使用{user}，则actions.js就不用解构user了，反之亦然
-            this.$store.dispatch('saveUser', user) // 将user和token保存到state, 将token保存local
+            console.log(this.$store);
+            this.$store.dispatch('saveUser', user) // 将user和token保存到state
 
             // 跳转到个人中心(有一个疑问：为啥路由跳转要放在前端而不是后端服务器呢？？)
             this.$router.replace({path: '/profile'})

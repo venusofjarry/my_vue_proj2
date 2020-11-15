@@ -21,7 +21,9 @@ import {
   LOGOUT,
   RECEIVE_GOODS,
   RECEIVE_RATING,
-  RECEIVE_INFO
+  RECEIVE_INFO,
+  ADD_FOOD_COUNT,
+  REDUCE_FOOD_COUNT
 
 } from './mutation-types'
   
@@ -114,6 +116,13 @@ export default {
       const rating = result.data
       commit(RECEIVE_RATING, rating)
       typeof cb==='function' && cb()
+    }
+  },
+  updateFoodCount({commit},{isAdd,food}){
+    if(isAdd){
+      commit(ADD_FOOD_COUNT,food)
+    }else{
+      commit(REDUCE_FOOD_COUNT,food)
     }
   }
 }

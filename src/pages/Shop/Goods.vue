@@ -16,10 +16,9 @@
           <li class="food-list-hook" v-for="(good,index) in goods" :key="index">
             <h1 class="title">{{good.name}}</h1>
             <ul>
-              <li class="food-item bottom-border-1px" v-for="(food,index) in good.foods" :key="index">
+              <li class="food-item bottom-border-1px" v-for="(food,index) in good.foods" :key="index" @click="showFood(food)">
                 <div class="icon">
-                  <img width="57" height="57"
-                      :src="food.icon">
+                  <img width="57" height="57" :src="food.icon">
                 </div>
                 <div class="content">
                   <h2 class="name">{{food.name}}</h2>
@@ -32,7 +31,7 @@
                     <span class="old" v-if="food.oldPrice">￥{{food.oldPrice}}</span>
                   </div>
                   <div class="cartcontrol-wrapper">
-                    CartControl组件
+                    <CartControl :food="food"/>
                   </div>
                 </div>
               </li>
@@ -40,6 +39,8 @@
           </li>
         </ul>
       </div>
+      <!-- 组件标签对象就是组件对象，子传父数据时，一般都要用到这个：使用ref标识子组件，然后通过ref属性取子组件中的数据 -->
+      <Food :food="food" ref="food"/>
     </div>
 </div>
 
@@ -48,11 +49,16 @@
 <script type="text/ecmasript-6">
 import { mapState } from 'vuex'
 import BScroll from 'better-scroll'
+import Food from '@/components/Food/Food'
   export default{
+    components: {
+      Food
+    },
     data(){
       return {
         scrollY: 0,
-        tops:[]
+        tops:[],
+        food:{}
       }
     },
 
@@ -115,6 +121,10 @@ import BScroll from 'better-scroll'
         this.scrollY = top
         this.rightScroll.scrollTo(0,-top,300)
 
+      },
+      showFood(food){
+        this.food = food
+        this.$refs.food.toggleShow()
       }
     },
     watch: {
