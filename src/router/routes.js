@@ -11,7 +11,7 @@ import Login from '@/pages/Login/Login.vue'
 import Shop from '@/pages/Shop/Shop.vue'
 import Goods from '@/pages/Shop/Goods.vue'
 import Info from '@/pages/Shop/Info.vue'
-import Rating from '@/pages/Shop/Rating.vue'
+import Ratings from '@/pages/Shop/Ratings.vue'
 
 export default [
     {
@@ -48,25 +48,28 @@ export default [
        component: Login
     }, 
     {
-        path: '/shop',
+        name: 'shop',
+        path: '/shop/:id',
+        props: true,  // 将所有params参数转换成标签属性传递给子路由组件
+        // props: toRoute => ({id: toRoute.params.id}) 
         component: Shop,
         children: [
             {
                 // 子路由中要么添加父路由的路径，要么去掉/，否则该子路由就在根路径下了。建议添加上父路由，帮助理解
-                path: '/shop/goods',
+                path: 'goods',
                component: Goods
             },
             {
-                path: '/shop/rating',
-               component: Rating
+                path: 'ratings',
+               component: Ratings
             },
             {
-                path: '/shop/info',
+                path: 'info',
                component: Info
             },
             {
                 path: '',
-                redirect: '/shop/goods'
+                redirect: 'goods'
             }
         ]
     },

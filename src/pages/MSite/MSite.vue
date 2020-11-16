@@ -35,7 +35,24 @@
       </div>
       <div class="shop_container">
         <ul class="shop_list" v-if="shops.length>0">
-          <li class="shop_li border-1px" v-for="shop in shops" :key="shop.id" @click="$router.push('/shop')">
+          <li class="shop_li border-1px" v-for="shop in shops" :key="shop.id" 
+          @click="$router.push(`/shop/${shop.id}`)">
+
+          <!-- 在调用push进行路由跳转时（需要携带参数）  这里是面试重点
+            1 @click="$router.push(`/shop/${shop.id}`)" 
+              直接路径path：自动跳转有效
+
+            2 @click="$router.push({
+              name: 'shop',
+              params: {
+                id: shop.id
+              }
+              })">
+              配置对象指定name/params：自动跳转无效
+
+              自动跳转就是路由设置redirect
+              直接路径path就是直接在后面添加参数，配置对象就是在push中配置数据
+          -->
             <a>
               <div class="shop_left">
                 <!-- 注意，这里的图片地址要看/有没有衔接好，不要重复/符号或者丢掉/符号，这样的话都拿不到图片 -->
@@ -105,8 +122,11 @@ import {mapState} from 'vuex'
 
   export default{
     computed: {
-      ...mapState(['address','categorys','shops']),
-
+      ...mapState({
+        address: state => state.msite.address,
+        categorys: state => state.msite.categorys,
+        shops: state => state.msite.shops
+      }),
 
       // 一维数组变二维数组 方法一：自定义函数
       /*

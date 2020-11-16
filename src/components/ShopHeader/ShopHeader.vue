@@ -2,7 +2,7 @@
   <div class="shop-header">
     <nav class="shop-nav"
          :style="{backgroundImage: `url(${info.bgImg})`}">
-      <a class="back">
+      <a class="back" @click="$router.replace('/msite')">
         <i class="iconfont icon-arrow_left"/>
       </a>
     </nav>
@@ -30,16 +30,15 @@
     </div>
 
     <!-- 
-      这个优惠的div，必须加上v-if，用于判断是否有优惠方案，如果有再渲染标签；没有就不能渲染标签，否则会出错，为啥出错？原因如下：
-      1 初始化时info状态数据是个空对象，空对象有这样的特性：
-        第一层：输出空对象本身不会报错；
-        第二层：输出空对象没有的属性，值为undefined，但也不会报错；
-        第三层：当使用info不存在的属性取该属性没有的属性（比如info.a.b），这时就会报错，因为undefined不能这样这样操作 
-      不能用v-show的原因是：v-show不管值是否是true，它都会渲染标签，这时肯定报错。但v-if会根据true/false决定是否渲染，所以不会报错
-     -->
+      初始显示异常: Cannot read property 'xxx' of undefined"
+      原因: 初始数据是一个空对象, 但表达式: a.b.c
+      解决:
+        正确: v-if  在没有数据时不解析/编译这块模板
+        错误: v-show 在没有数据时也会解析/编译这块模板  ==> 导致报错
+    -->
     <div class="shop-header-discounts" v-if="info.supports" @click="isShowSupports=true">
       <div class="discounts-left">
-        <div :class="supportClasses[info.supports[0].type]">
+        <div class="activity" :class="supportClasses[info.supports[0].type]"> 
           <span class="content-tag">
             <span class="mini-tag">{{info.supports[0].name}}</span>
           </span>
@@ -47,121 +46,95 @@
         </div>
       </div>
       <div class="discounts-right">
-        3个优惠
+        {{info.supports.length}}个优惠
       </div>
     </div>
-
-
-    <transition name="fade">
+    <transition name="fade">  <!-- fade-enter-active fade-leave-active fade-enter fade-leave-to -->
       <div class="shop-brief-modal" v-show="isShowBulletin">
         <div class="brief-modal-content">
           <h2 class="content-title">
             <span class="content-tag">
               <span class="mini-tag">品牌</span>
             </span>
-            <span class="content-name">嘉禾一品（温都水城）</span>
+            <span class="content-name">{{info.name}}</span>
           </h2>
           <ul class="brief-modal-msg">
             <li>
-              <h3>3.5</h3>
+              <h3>{{info.rating}}</h3>
               <p>评分</p>
             </li>
             <li>
-              <h3>90单</h3>
+              <h3>{{info.sellCount}}单</h3>
               <p>月售</p>
             </li>
             <li>
               <h3>硅谷专送</h3>
-              <p>约28分钟</p>
+              <p>约{{info.deliveryTime}}分钟</p>
             </li>
             <li>
-              <h3>4元</h3>
+              <h3>{{info.deliveryPrice}}元</h3>
               <p>配送费用</p>
             </li>
             <li>
-              <h3>1000m</h3>
+              <h3>{{info.distance}}</h3>
               <p>距离</p>
             </li>
           </ul>
           <h3 class="brief-modal-title">
             <span>公告</span></h3>
-            <div class="brief-modal-notice">
-              是以粥为特色的中式营养快餐，自2004年10月18日创立“嘉和一品”品牌至今
-            </div>
-          <div class="mask-footer">
-            <span class="iconfont icon-close" @click="isShowBulletin=false"></span>
+            <div class="brief-modal-notice">{{info.bulletin}}</div>
+          <div class="mask-footer" @click="isShowBulletin = false">
+            <span class="iconfont icon-close"></span>
           </div>
         </div>
-        <div class="brief-modal-cover" @click="isShowBulletin=false"></div>
+        <div class="brief-modal-cover" @click="isShowBulletin = false"></div>
       </div>
     </transition>
-    <transition name="fade">
-      <div class="activity-sheet" v-show="isShowSupports">
-        <div class="activity-sheet-content"> 
-          <h2 class="activity-sheet-title">
-          优惠活动</h2>
-          <ul class="list">
-            <li class="activity-item" :class="supportClasses[support.type]"
-            v-for="(support,index) in info.supports" :key="index">
-              <span class="content-tag">
-                <span class="mini-tag">{{support.name}}</span>
-              </span>
-              <span class="activity-content">{{support.content}}</span>
-            </li>
-            <!-- <li class="activity-item activity-green">
-              <span class="content-tag">
-                <span class="mini-tag">首单</span>
-              </span>
-              <span class="activity-content">新用户下单立减17元(不与其它活动同享)</span>
-            </li>
-            <li class="activity-item activity-red">
-              <span class="content-tag">
-                <span class="mini-tag">满减</span>
-              </span>
-              <span class="activity-content">满35减19，满65减35</span>
-            </li>
-            <li class="activity-item activity-orange">
-              <span class="content-tag">
-                <span class="mini-tag">特价</span>
-              </span>
-              <span class="activity-content">【立减19.5元】欢乐小食餐</span>
-            </li> -->
-          </ul>
-          <div class="activity-sheet-close">
-            <span class="iconfont icon-close"  @click="isShowSupports=false"></span>
-          </div>
+    
+
+    <div class="activity-sheet" v-show="isShowSupports">
+      <div class="activity-sheet-content">
+        <h2 class="activity-sheet-title">
+        优惠活动</h2>
+        <ul class="list">
+          <li class="activity-item" :class="supportClasses[support.type]" v-for="(support, index) in info.supports" :key="index">
+            <span class="content-tag">
+              <span class="mini-tag">{{support.name}}</span>
+            </span>
+            <span class="activity-content">{{support.content}}</span>
+          </li>
+        </ul>
+        <div class="activity-sheet-close" @click="isShowSupports=false">
+          <span class="iconfont icon-close"></span>
         </div>
-        <div class="activity-sheet-cover" @click="isShowSupports=false"></div>
       </div>
-    </transition>
-    <Goods />
+      <div class="activity-sheet-cover" @click="isShowSupports=false"></div>
+    </div>
   </div>
 </template>
 
-
-
-<script type="text/ecmasript-6">
-import { mapState } from 'vuex'
-import Goods from '../../pages/Shop/Goods'
-  export default{
-    components: {
-      Goods
-    },
-    data(){
+<script type="text/ecmascript-6">
+  import {mapState} from 'vuex'
+  export default {
+    data () {
       return {
-        supportClasses: ['activity-green','activity-red','activity-orange'],
+        supportClasses: ['activity-green', 'activity-red', 'activity-orange'],
         isShowBulletin: false,
         isShowSupports: false
       }
     },
+
     computed: {
-      ...mapState(['info'])
+      ...mapState({
+        info: state => state.shop.shop.info || {}
+      })
     }
   }
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus" scoped>
   @import "../../common/stylus/mixins.styl"
+
   .shop-header
     height 100%
     position relative
@@ -349,8 +322,8 @@ import Goods from '../../pages/Shop/Goods'
       z-index 52
       flex-direction column
       color #333
-      &.fade-enter-active, &.fade-leave-active
-        transition opacity .3s
+      &.fade-enter-active, &.fade-leave-active 
+        transition opacity .5s
       &.fade-enter, &.fade-leave-to
         opacity 0
       .brief-modal-cover
@@ -455,9 +428,9 @@ import Goods from '../../pages/Shop/Goods'
       width 100%
       height 100%
       z-index 99
-      &.fade-enter-active, &.fade-leave-active
+      &.move-enter-active, &.move-leave-active
         transition opacity .3s
-      &.fade-enter, &.fade-leave-to
+      &.move-enter-active, &.move-leave-active
         opacity 0
       .activity-sheet-content
         position absolute
@@ -534,4 +507,3 @@ import Goods from '../../pages/Shop/Goods'
         background-color rgba(0, 0, 0, .5)
 
 </style>
-

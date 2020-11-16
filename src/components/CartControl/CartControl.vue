@@ -16,16 +16,16 @@ import {throttle} from 'lodash' //该方法用于节流（在设置的时间段�
       food: Object
     },
     methods: {
-      // updateFoodCount: throttle(function(isAdd){
-      //   /*
-      //     1 我们不应该直接更新food（this.food = food），因为food数据是Foods组件的数据；我们应该在状态中改变数据
-      //     2 初始化时，count是undefined
-      //   */
-      //     this.$store.dispatch('updateFoodCount', {isAdd,food:this.food})
-      // },1000)
-      updateFoodCount (isAdd) {
-        this.$store.dispatch('updateFoodCount', {isAdd,food:this.food})
-      }
+      updateFoodCount: throttle(function(isAdd){
+        /*
+          1 我们不应该直接更新food（this.food = food），因为food数据是Foods组件的数据；我们应该在状态中改变数据
+          2 初始化时，count是undefined
+        */
+          this.$store.dispatch('updateFoodCount', {isAdd,food:this.food})
+      },500,{trailing: false}) // 配置对象说明：在1s内多次点击，只响应第一次点击（默认是响应2次，且第2次是过了1s之后才响应）
+      // updateFoodCount (isAdd) {
+      //   this.$store.dispatch('updateFoodCount', {isAdd,food:this.food})
+      // }
     }
   }
 </script>

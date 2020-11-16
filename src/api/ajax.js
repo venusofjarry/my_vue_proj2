@@ -25,7 +25,8 @@ instance.interceptors.request.use((config) => {
   if (config.method.toUpperCase()==='POST' && config.data instanceof Object) {
     config.data = qs.stringify(config.data)
   }
-  const token = store.state.token
+  // 在模块化vuex之后，这里的state不能直接取token，要通过user分模块才能拿到
+  const token = store.state.user.token
   // 判断此次请求是否需要携带token，比如登录，或者免登录，都需要携带token给后台验证；但是比如搜索就不用登录也可以看。  不是全部的路由都需要token才能看，所以我们才要给请求添加一个请求头属性：needToken，当它为真，说明需要token，那我们就给；反之就不给
   if (config.headers.needToken){
     // 这里不能一棒子打死，如果我不需要token，但是我还是可以看到login页面，这里需要加第二个判断条件：路径是否是login（根路径我也重定向到了login）
