@@ -83,12 +83,12 @@
       })
     },
     mounted () {
-      if(this.info.name) { // 从其它路由切换过来, 数据已经有了
+      if(this.info.name) {
         this._initScroll()
       }
     },
     watch: {
-      info () { // 在当前路由刷新: 初始显示没有数据, 后面才有了数据
+      info () {
         this.$nextTick(() => {
           this._initScroll()
         })
@@ -96,21 +96,18 @@
     },
     methods: {
       _initScroll () {
-        // 整体垂直滑动
         new BScroll('.shop-info', {
           click: true
         })
-        // 给ul指定样式宽度
         const ul = this.$refs.picsUl
         const liWidth = 120
         const space = 6
         const liCount = this.info.pics.length
         const width = (liWidth + space) * liCount - space
         ul.style.width = width + 'px'
-        // 水平滑动
         new BScroll('.pic-wrapper', {
           click: true,
-          scrollX: true, // 水平滑动
+          scrollX: true,
         })
       }
     }

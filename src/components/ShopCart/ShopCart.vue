@@ -19,18 +19,6 @@
         </div>
         </div>
           <transition name="move">
-
-            <!-- 这里的v-show如果改成v-if，则会出现这样一种情况：
-                  当我们第一次打开购物车时，可以滑动，后续再打开就不再滑动，为啥？
-                  因为显示隐藏是通过类实现的，而v-if在重建标签，初始化时有这个类，但是重建之后就没了
-                  所以初始化能滑动，后续就不能再滑动了。
-                  这里说一下v-if和v-show的用法区别：
-                  只能使用v-if的情况是：当我们使用对象，遍历3层，或者以上的属性时，报了undefined的错误，则需要
-                  使用v-if，因为通常有这样一种情况：当我们初始化页面时，有些数据还没有获取到，这时我们不能渲染这个
-                  标签，否则会报错：undefined，这是只能使用v-if
-                  而有时候我们又必须使用v-show，比如这个组件中的滑动实例，我们必须保证滑动实例所在标签不能重新渲染，否则
-                  该标签的类就消失了，导致不能滑动
-              -->
               <div class="shopcart-list" v-show="listShow">
 
                 <div class="list-header">
@@ -74,7 +62,6 @@
           cartFoods: state => state.shop.cartFoods || {},
           info: state => state.shop.shop.info || {}
       }),
-        // getters不受模块化vuex的写法影响，该咋写还咋写
         ...mapGetters(['totalCount', 'totalPrice']),
         payClass(){
             const {totalPrice} = this
@@ -93,38 +80,18 @@
           }
         },
         
-        /*
-          只要购物车不为空，则购物车显示隐藏只取决于isShow的真假。
-          我们要的效果是：如果购物车为空，则隐藏购物车。那我们需要添加一个可以控制：当购物车为空时，隐藏购物车的标记。
-          这里我们将isShow和购物车为空放在一起：
-          只要当购物车不为空，则永远只由isShow控制（点击显示隐藏）。只要购物车为空，则隐藏购物车，并将isShow设置成false，
-          这样一来，购物车为空时，isShow永远都是false，所以不会出现isShow和购物车为空时两者的真假不一致的问题
-        */
         listShow(){
           if(this.totalCount === 0){
             this.isShow = false
             return false
           }
           if(this.isShow){
-            /*
-              这里必须创建单例对象：只能有一个实例对象，因为滑动实例只需要一个，而我们在每次点击显示购物车时，都会创建一个
-              或者多个（为什么会创建多个？因为这个listShow计算属性会在我们点击显示隐藏购物车时被多次计算，而我们是在这个
-              计算属性中创建这个滑动实例的）
-              1 创建前对象不能存在
-              2 创建后，保存对象
-            */
             this.$nextTick(() => {
               if(!this.scroll){
                 this.scroll = new BScroll(this.$refs.foods, {
                 click: true
                 })
               }else{
-                /*
-                  当我们已经创建了一个滑动实例，需要判断当前是否需要滑动，因为插件不会自动帮我们判断是否需要滑动，
-                  之前我们在shop文件夹中的goods组件中也使用了滑动实例，但是这里不一样，这里每次显示购物车，都需要重新
-                  计算是否需要滑动，而goods组件中渲染的固定的商品列表，没有变化，所以那里不需要refresh方法，而这里必须
-                  使用
-                */
                 this.scroll.refresh()
               }
             })

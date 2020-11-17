@@ -7,15 +7,11 @@
 <script type="text/ecmascript-6">
   export default {
     props: {
-      score: Number, // 评分
-      size: Number, // 尺寸
+      score: Number,
+      size: Number,
     },
 
     computed: {
-      /* 
-      5个星星类名的数组
-      3.5 = 3 + 1 + 1
-      */
       starClasses () {
         const {score} = this
         const arr = []

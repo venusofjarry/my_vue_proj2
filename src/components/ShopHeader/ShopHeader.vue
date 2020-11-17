@@ -29,13 +29,6 @@
       </div>
     </div>
 
-    <!-- 
-      初始显示异常: Cannot read property 'xxx' of undefined"
-      原因: 初始数据是一个空对象, 但表达式: a.b.c
-      解决:
-        正确: v-if  在没有数据时不解析/编译这块模板
-        错误: v-show 在没有数据时也会解析/编译这块模板  ==> 导致报错
-    -->
     <div class="shop-header-discounts" v-if="info.supports" @click="isShowSupports=true">
       <div class="discounts-left">
         <div class="activity" :class="supportClasses[info.supports[0].type]"> 

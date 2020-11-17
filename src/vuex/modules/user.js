@@ -10,7 +10,6 @@ import {
 
 export default {
     state: {
-        // 注意，一般空对象要比null好，因为我们可以使用user.的形式添加属性；一旦使用了null，这种操作立马报错
         user: {},
         token: localStorage.getItem('token_key') || '',
     },
@@ -27,7 +26,6 @@ export default {
         },
     },
     actions: {
-          // 保存用户的同步action，这里碰到一个问题，我使用...mapState和this.$store.state.user都可以读到数据，但就是通过浏览器的vuex看不到数据，后面如果遇到了拿不到user的数据，问题可能出在这里
         saveUser({commit}, user){
             const token = user.token
             localStorage.setItem('token_key',token)
@@ -36,13 +34,12 @@ export default {
             commit(RECEIVE_TOKEN,token)
         },
 
-        // 退出登录
         logout({commit}){
             localStorage.removeItem('token_key')
             commit(LOGOUT)
             
         },
-        // 自动登录的异步action
+
         async autoLogin({commit}){
             const result = await reqAutoLogin()
             if(result.code===0){

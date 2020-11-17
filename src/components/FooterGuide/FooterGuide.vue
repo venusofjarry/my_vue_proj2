@@ -33,10 +33,8 @@
 
     methods: {
       goto (path) {
-        // 这里判断是否已经在当前路由页面了，如果不是，则进行跳转
         if (path!==this.$route.path) {
           this.$router.push(path)
-          // 如果已经在当前路由页面了，则刷新一遍（这个不知道有没有用，也可以不用设置，无反应就好了）
         }else{
           window.location = path
         }

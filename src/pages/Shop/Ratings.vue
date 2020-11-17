@@ -80,8 +80,8 @@
 
     data () {
       return {
-        onlyShowText: true, // 是否只显示有文本的
-        selectType: 2 , // 选择的评价类型: 0满意, 1不满意, 2全部
+        onlyShowText: true,
+        selectType: 2 ,
       }
     },
     computed: {
@@ -92,22 +92,10 @@
       ...mapGetters(['positiveSize']),
 
       filterRatings () {
-        // 得到相关的数据
         const {ratings, onlyShowText, selectType} = this
 
-        // 产生一个过滤新数组
         return ratings.filter(rating => {
           const {rateType, text} = rating
-          /*
-            条件1:
-                selectType: 0/1/2
-                rateType: 0/1
-                selectType===2 || selectType===rateType
-            条件2
-                onlyShowText: true/false
-                text: 有值/没值
-                !onlyShowText || text.length>0
-           */
           return (selectType===2 || selectType===rateType) && (!onlyShowText || text.length>0)
         })
       }

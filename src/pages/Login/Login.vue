@@ -10,12 +10,9 @@
       </div>
       <div class="login_content">
         <form>
-          <!-- 第二步：form表单有两个div，使用isShowSms控制显示和隐藏 -->
           <div :class="{on: isShowSms}">
             <section class="login_message">
-              <!-- 第三步：创建两个变量phone和isRightPhone，分别用来获取电话输入和控制验证码发送的状态：首先获取到数据，然后进行判断，如果不合法，则设置disabled属性为true；如果合法，则设置disabled属性为false，并且高亮获取验证码字样，最后，在数据合法的前提下创建点击事件，发送验证码 -->
               <input type="tel" maxlength="11" placeholder="手机号" v-model="phone" name="phone" v-validate="'required|mobile'">
-               <!-- 在已经有了class属性之后，我们还可以通过绑定符号添加另外的样式，比如这里，初始化样式是get_verification，后面通过绑定样式添加right_phone_number，也就是号码符合验证规则之后，获取验证码字样变成高亮显示 -->
               <button :disabled="!isRightPhone || computeTime>0" class="get_verification" 
                   :class="{right_phone_number: isRightPhone}" @click.prevent="sendCode">
                     {{computeTime>0 ? `短信已发送(${computeTime}s)` : '发送验证码'}}
@@ -35,7 +32,6 @@
                   v-model="name" name="name" v-validate="'required'">
                 <span style="color: red;" v-show="errors.has('name')">{{ errors.first('name') }}</span>
               </section>
-              <!-- 第四步 控制密码的显示隐藏：首先创建一个控制显示隐藏密码的状态值：isShowPwd，用三目表达式控制type属性，其次设置button的类：on和off，最后添加点击事件，让其不断重复显示隐藏（通过控制状态值isShowPwd） -->
               <section class="login_verification">
                 <input :type="isShowPwd ? 'text' : 'password'" placeholder="密码" 
                    v-model="pwd" name="pwd" v-validate="'required'">
@@ -48,10 +44,8 @@
               <section class="login_message">
                 <input type="text" maxlength="11" placeholder="验证码"
                   v-model="captcha" name="captcha" v-validate="{required: true,regex: /^[0-9a-zA-Z]{4}$/}">
-                <!-- 当前发送是一个跨域的http请求，利用的代理服务器proxy跨域(不是ajax请求) ，通过改变img标签的src路径，达到更新验证码的效果。这里有点像jsonp，jsonp是通过script标签的src属性，这个属性不受同源策略的影响-->
                 <img class="get_verification" src="http://localhost:4000/captcha" 
                   alt="captcha" @click="updateCaptcha" ref="captcha">
-                <!-- 原本404, 利用代理服务器转发请求4000的后台接口 -->
                 <!-- <img class="get_verification" src="/api/captcha" alt="captcha"> -->
                 <span style="color: red;" v-show="errors.has('captcha')">{{ errors.first('captcha') }}</span>
               </section>
@@ -64,8 +58,6 @@
       <a href="javascript:" class="go_back" @click="$router.replace('/profile')">
         <i class="iconfont icon-jiantou2"></i>
       </a>
-
-      <!-- <button @click="toggleLanguage">切换语言</button> -->
     </div>
   </section>
   
@@ -73,25 +65,22 @@
 
 <script type="text/ecmascript-6">
   import { Toast, MessageBox } from 'mint-ui'
-  // 在main主文件中设置了$API之后，就不用在这里引入了，我们可以通过$API拿到api中的函数了
-  // import {reqSendCode,reqPwdLogin,reqSmsLogin} from '../../api'
   export default {
     name: 'Login',
     data () {
       return {
-        isShowSms: false, // true: 显示短信登陆界面,  false: 显示密码登陆界面
-        phone: '', // 手机号
-        code: '', // 短信验证码
-        name: '', // 用户名
-        pwd: '', // 密码
-        captcha: '', // 图形验证码
-        computeTime: 0, // 计时剩余时间
-        isShowPwd: false, // 是否显示密码
+        isShowSms: false,
+        phone: '',
+        code: '',
+        name: '',
+        pwd: '',
+        captcha: '',
+        computeTime: 0,
+        isShowPwd: false,
       }
     },
 
     computed: {
-      // 是否是一个正确的手机号
       isRightPhone () {
         return /^1\d{10}$/.test(this.phone)
       }
@@ -99,31 +88,25 @@
 
     methods: {
       async sendCode () {
-        // 进行倒计时效果显示
         this.computeTime = 10
         const intervalId = setInterval(() => {
           this.computeTime--
-          // 当我们设置停止倒计时，将computeTime设置成0了，那这里就要改为this.computeTime<=0，判断：当发送验证码失败之后，computeTime重置成0，下一秒就会变成-1，这时就需要清除定时器
           if (this.computeTime<=0) {
-            // 在关闭定时器之前，需要重置computeTime，否则在第一登录时会发生错误，因为computeTime的值是-1（随后会执行sendCode函数，将computeTime的值重置为10，问题就出在第一次）
             this.computeTime = 0
             clearInterval(intervalId)
           }
         }, 1000);
 
-        // 发请求获取验证码
         const result = await this.$API.reqSendCode(this.phone)
         if (result.code===0) {
           Toast('验证码短信已发送');
         } else {
-          // 如果验证失败，停止倒计时
           this.computeTime = 0
           MessageBox('提示', result.msg || '发送失败');
         }
       },
 
       async login () {
-        // 进行前台表单验证
         let names
         if (this.isShowSms) {
           names = ['phone', 'code']
@@ -131,30 +114,22 @@
           names = ['name', 'pwd', 'captcha']
         }
 
-        const success = await this.$validator.validateAll(names) // 对指定的所有表单项进行验证
-        // 如果验证通过, 发送登陆的请求
+        const success = await this.$validator.validateAll(names) 
         let result
         if (success) {
           const {isShowSms, phone, code, name, pwd, captcha} = this
           if (isShowSms) {
-            // 短信登陆
             result = await this.$API.reqSmsLogin({phone, code})
-            // 不管手机登录成功与否，都停止倒计时，因为如果不停止计时器，会造成内存泄漏，但是我们这里
             this.computeTime = 0
           } else {
-            // 密码登陆
             result = await this.$API.reqPwdLogin({name, pwd, captcha})
-            this.updateCaptcha() // 更新图形验证码
+            this.updateCaptcha()
             this.captcha = ''
           }
 
-          // 根据请求的结果, 做不同响应处理
           if (result.code===0) {
             const user = result.data
-            // 将user保存到vuex的state.  注意，这里如果使用{user}，则actions.js就不用解构user了，反之亦然
-            this.$store.dispatch('saveUser', user) // 将user和token保存到state
-
-            // 跳转到个人中心(有一个疑问：为啥路由跳转要放在前端而不是后端服务器呢？？)
+            this.$store.dispatch('saveUser', user)
             this.$router.replace({path: '/profile'})
           } else {
             MessageBox('提示', result.msg)
@@ -163,25 +138,12 @@
       },
 
       updateCaptcha () {
-        // 在不更新login路由对应的页面的情况下，刷新验证码，因为如果不更新路径，浏览器默认使用的缓存而非向服务器发送请求：这个和解决ie强缓存很相似
         this.$refs.captcha.src = 'http://localhost:4000/captcha?time=' + Date.now()
       },
-
-      // toggleLanguage () {
-      //   // 根据当前语言得到新的语言
-      //   const locale = this.$i18n.locale==='en' ? 'zh_CN' : 'en'
-      //   // 指定新的语言
-      //   this.$i18n.locale = locale
-      //   // 将新的语言保存到local
-      //   localStorage.setItem('locale_key', locale)
-      // }
     },
 
-    /*
-      该方法在当前组件对象被创建前调用，不能直接访问this(组件都没有，this肯定为undefined)。但是我们可以通过next(() => {})，在回调中访问组件对象
-    */
     beforeRouteEnter (to, from, next) {
-      next((comp) => { // 这个next方法如果传入了回调，该回调就会在组件对象被创建之后再调用，而且回调函数会传入组件对象作为参数供回调函数使用
+      next((comp) => {
         const token = comp.$store.state.user.token
         console.log(token)
         if(token){

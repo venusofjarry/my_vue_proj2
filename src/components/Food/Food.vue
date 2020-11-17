@@ -2,7 +2,6 @@
   <div class="food" v-show="isShow">
     <div class="food-content">
       <div class="image-header">
-        <!-- 使用vue-lazyload必须要加v-if，不能使用v-show，因为v-show会保留上一张图片，这样我们浏览的时候，会发现图片切换了。用v-if就没这个问题 -->
         <img v-if="isShow" v-lazy="food.icon">
         <p class="foodpanel-desc">{{food.info}}</p>
         <div class="back" @click="toggleShow">

@@ -44,7 +44,6 @@
       </div>
       <ShopCart/>
     </div>
-    <!-- 组件标签对象就是组件对象 -->
     <Food :food="food" ref="food"/>
   </div>
 </template>
@@ -57,12 +56,10 @@
   export default {
     data () {
       return {
-        // 1). 右侧列表滑动的Y轴坐标: scrollY  在滑动过程中不断改变
         scrollY: 0,
-        // 2). 右侧每个分类<li>的top值的数组tops: 第一次列表显示后统计后面不再变化
         tops: [],
 
-        food: {}, // 需要显示的food
+        food: {},
       }
     },
     computed: {
@@ -73,9 +70,7 @@
         const {scrollY, tops} = this
         const index = tops.findIndex((top, index) => scrollY>=top && scrollY<tops[index+1])
         if (index!==this.index && this.leftScroll) {
-          // 将新的下标保存起来
           this.index = index
-          // 让左侧列表滑动到当前分类处
           const li = this.$refs.leftUl.children[index]
           this.leftScroll.scrollToElement(li, 300)
         }
@@ -84,25 +79,20 @@
     },
 
     methods: {
-      // 初始化滑动
       _initScroll () {
         if (!this.leftScroll) {
           this.leftScroll = new BScroll(this.$refs.left, {
-            click: true, // 分发自定义的click事件
+            click: true,
           })
           this.rightScroll = new BScroll(this.$refs.right, {
             click: true,
-            probeType: 1, // 非实时 / 触摸
-            // probeType: 2, // 实时 / 触摸
-            // probeType: 3 // 实时 / 触摸 / 惯性 / 编码
+            probeType: 1, 
           })
 
-          // 给右侧列表绑定scroll监听
           this.rightScroll.on('scroll', ({x, y}) => {
             this.scrollY = Math.abs(y)
           })
 
-          // 给右侧列表绑定scrollEnd监听
           this.rightScroll.on('scrollEnd', ({x, y}) => {
             this.scrollY = Math.abs(y)
           })
@@ -111,9 +101,6 @@
           this.rightScroll.refresh()
         }
       },
-      /* 
-      统计右侧所有分类li的top的数组
-      */
       _initTops () {
         const tops = []
         let top = 0
@@ -124,35 +111,21 @@
           tops.push(top)
         })
 
-        // 更新tops数据
         this.tops = tops
       },
 
       clickItem (index) {
-        // 得到对应的top
         const top = this.tops[index]
-
-        // 立即更新scrollY为目标值(立即选中当前分类项)
         this.scrollY = top
-
-        // 让右侧列表滑动到对应位置
         this.rightScroll.scrollTo(0, -top, 300)
       },
-
-      /* 
-      父组件调用子组件的方法: ref
-      子组件调用父组件的方法: props
-      */
       showFood (food) {
-        // 更新数据
         this.food = food
-        // 显示food组件界面
         this.$refs.food.toggleShow()
       } 
     },
 
     mounted () {
-      // 如果数据已经有了, 直接做初始化的操作
       if (this.goods.length>0) {
         this._initScroll()
         this._initTops()
@@ -160,8 +133,8 @@
     },
 
     watch: {
-      goods () { // goods数据有了
-        this.$nextTick(() => {// 列表数据显示了
+      goods () {
+        this.$nextTick(() => {
           this._initScroll()
           this._initTops()
         })

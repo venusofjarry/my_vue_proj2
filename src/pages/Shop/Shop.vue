@@ -25,39 +25,21 @@
     props: ['id'],
 
     mounted () {
-      // this.$store.dispatch('getShopInfo')
-      // this.$store.dispatch('getShopGoods')
-      // this.$store.dispatch('getShopRatings')
-
-      // 得到当前请求的商家ID
-      // const id = this.$route.params.id
       const id = this.id
-      // console.log('id', id)
-
-      // 分发action请求商家数据
       this.$store.dispatch('getShop', id)
-
-      // 给窗口绑定一个卸载的监听(刷新)
-      // window.onunload = () => {}
       window.addEventListener('unload', () => {
-        const {shop:{id}, cartFoods } = this.shop  // 多层解构
-        // 将当前商家的购物车数据保存
+        const {shop:{id}, cartFoods } = this.shop
         saveCartFoods(id, cartFoods)
       })
     },
 
     computed: {
       ...mapState({
-        shop: state => state.shop   // {shop: {}, cartFoods: []}
+        shop: state => state.shop
       })
     },
-
-    // 在退出当前商家界面时调用
-    beforeDestroy () { //在刷新界面时不会执行
-      // sessionStorage.setItem('beforeDestroy_key', 2)
-      const {shop:{id}, cartFoods } = this.shop  // 多层解构
-
-      // 将当前商家的购物车数据保存
+    beforeDestroy () {
+      const {shop:{id}, cartFoods } = this.shop
       saveCartFoods(id, cartFoods)
     },
 

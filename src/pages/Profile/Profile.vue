@@ -1,17 +1,11 @@
 <template>
   <section class="profile">
-    <!-- <header class="header">
-      <a class="header_title">
-        <span class="header_title_text">我的</span>
-      </a>
-    </header> -->
     <Header title="个人" />
     <section class="profile-number" @click="$router.push('/login')">
       <a href="javascript:" class="profile-link">
         <div class="profile_image">
           <i class="iconfont icon-person"></i>
         </div>
-        <!-- 注意，第一次登录时会展示个人登录信息，但是一刷新页面就没了;原因是：刷新的时候没有携带token，所以服务器以为是在登录，但是我们又没有输入登录信息，所以一刷新木得了。我们可以给自动登录配置一个对象：header: {needToken:true} -->
         <div class="user-info">
           <p class="user-info-top" v-if="!user.phone">
            {{user.name ? user.name : '登录/注册'}}
@@ -69,7 +63,6 @@
           </span>
         </div>
       </a>
-      <!-- 硅谷外卖会员卡 -->
       <a href="javascript:" class="my_order">
         <span>
           <i class="iconfont icon-vip"></i>
@@ -122,7 +115,6 @@ import { mapState } from 'vuex'
       logOut(){
         messageBox.confirm('确定要退出码？').then(
           action => {
-            // 不知道为啥，这里退出登录之后，不会自动刷新页面，我不得不使用路由重新跳转了
             this.$store.dispatch('logout')
             this.$router.replace('/login')
           },

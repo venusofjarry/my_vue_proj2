@@ -1,10 +1,5 @@
 <template>
   <section class="order">
-    <!-- <header class="header">
-      <a class="header_title">
-        <span class="header_title_text">订单列表</span>
-      </a>
-    </header> -->
     <Header title="订单列表" />
     <section class="order_no_login">
       <img src="./images/order/person.png">

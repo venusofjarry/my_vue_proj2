@@ -13,7 +13,6 @@
     <nav class="msite_nav">
       <div ref="sc1" class="swiper-container">
                 <div class="swiper-wrapper">
-                  <!-- 下面有两个数组方法可以使用，任用其一即可 -->
           <div class="swiper-slide" v-for="(cs, index) in catrgorysArr2" :key="index">
             <div class="link_to_food" v-for="(c, index) in cs" :key="index">
               <div class="food_container">
@@ -27,7 +26,6 @@
         <div class="swiper-pagination"></div>
       </div>
     </nav>
-    <!--首页附近商家-->
     <div class="msite_shop_list">
       <div class="shop_header">
         <i class="iconfont icon-xuanxiang"></i>
@@ -37,25 +35,8 @@
         <ul class="shop_list" v-if="shops.length>0">
           <li class="shop_li border-1px" v-for="shop in shops" :key="shop.id" 
           @click="$router.push(`/shop/${shop.id}`)">
-
-          <!-- 在调用push进行路由跳转时（需要携带参数）  这里是面试重点
-            1 @click="$router.push(`/shop/${shop.id}`)" 
-              直接路径path：自动跳转有效
-
-            2 @click="$router.push({
-              name: 'shop',
-              params: {
-                id: shop.id
-              }
-              })">
-              配置对象指定name/params：自动跳转无效
-
-              自动跳转就是路由设置redirect
-              直接路径path就是直接在后面添加参数，配置对象就是在push中配置数据
-          -->
             <a>
               <div class="shop_left">
-                <!-- 注意，这里的图片地址要看/有没有衔接好，不要重复/符号或者丢掉/符号，这样的话都拿不到图片 -->
                 <img class="shop_img" :src="'https://fuss10.elemecdn.com' + shop.image_path">
               </div>
               <div class="shop_right">
@@ -90,7 +71,6 @@
             </a>
           </li>
         </ul>
-        <!-- 下面的ul用于数据获取展示之前的类似加载页面，这样用户体验度更好 -->
         <ul v-else>
           <li>
             <img src="./images/shop_back.svg" alt="loading...">
@@ -113,10 +93,8 @@
 
 <script type="text/ecmasript-6">
 import Swiper from 'swiper'
-// 下面这个css文件老是找不到，不知道为啥，干脆拿出来算了
 import './swiper-bundle.css'
 import _ from 'lodash'
-// 按需引入，这里只需要chunk     注意，lodash.js是将lodash中所有方法汇总了，它内部引入了很多js文件，其中包括chunk，我们可以使用/的方法按需访问
 import chunk from 'lodash/chunk'
 import {mapState} from 'vuex'
 
@@ -127,15 +105,6 @@ import {mapState} from 'vuex'
         categorys: state => state.msite.categorys,
         shops: state => state.msite.shops
       }),
-
-      // 一维数组变二维数组 方法一：自定义函数
-      /*
-        第一步 先将空的小数组放入空的大数组，这样我操作小数组的同时，大数组中的小数组也在变化，因为操作的就是同一个小数组
-        第二步 将请求过来的数组的元素推入小数组中
-        第三步 判断小数组中的元素是否满8个，如果是，则重新创建一个小数组，这里要注意，我重新创建的小数组，不会覆盖原来的小数组，打个比方：
-        let arr = [];   arr.push(1);  arr = [];
-        这时，这个arr就不是原来那个arr了，通过arr = []这个操作，arr已经重新指向了一个全新的空数组，原来的被推入数字1的数组和重新指向的那个数组不是同一个。
-      */
       catrgorysArr () {
         const bigArr = [];
         let smallArr = [];
@@ -154,7 +123,6 @@ import {mapState} from 'vuex'
         return bigArr
       },
 
-      // 一维数组变二维数组 方法二：使用lodash
       catrgorysArr2 () {
         return _.chunk(this.categorys,8)
       }
@@ -162,56 +130,17 @@ import {mapState} from 'vuex'
 
 
     async mounted(){
-      // // 解决swiper轮播不正常的方法方法2：dispatch回调
-      // this.$store.dispatch('getCategorys', () => {
-      //   // $nextTick方法将回调延迟到下次 DOM 更新循环之后执行，在修改数据之后立即使用它，然后等待 下一次DOM 更新。
-      //   // 在dom更新循环之后，界面已经更新了，那么我们就可以使用swiper方法渲染轮播效果。
-      //   this.$nextTick(() => {
-
-      //     // swiper对象必须要在列表数据显示之后才能创建
-      //     // new Swiper(this.$refs.sc1, {
-      //     loop: true, // 循环轮播（无缝轮播）
-      //     // 如果需要分页器(我把swiper-bundle.css文件直接拿出来用了，不在node_modules文件中找)
-      //       pagination: {
-      //       el: '.swiper-pagination'
-      //       }
-      //     })
-      //   })
-      // })
       this.$store.dispatch('getShops')
-
-      // 解决swiper轮播不正常的方法方法3:利用dispatch返回一个promise对象，异步操作(then或者async await都行)
       await this.$store.dispatch('getCategorys')
       .then(() => {
         new Swiper(this.$refs.sc1, {
-          loop: true, // 循环轮播（无缝轮播）
-          // 如果需要分页器(用着用着就不见了，找不着，还是自己写轮播算了)
+          loop: true, 
           pagination: {
           el: '.swiper-pagination'
           }
         })
       });
     },
-    
-
-    // 解决swiper轮播不正常的方法方法1：watch+$nextTick
-    // watch: {
-    //   categorys () {
-    //     // $nextTick方法将回调延迟到下次 DOM 更新循环之后执行，在修改数据之后立即使用它，然后等待 下一次DOM 更新。
-    //     // 在dom更新循环之后，界面已经更新了，那么我们就可以使用swiper方法渲染轮播效果。
-    //     this.$nextTick(() => {
-    //       // swiper对象必须要在列表数据显示之后才能创建
-    //      // new Swiper('.swiper-container', {
-    //       // new Swiper(this.$refs.sc1, {
-    //       loop: true, // 循环轮播（无缝轮播）
-    //       // 如果需要分页器(用着用着就不见了，找不着，还是自己写轮播算了)
-    //       pagination: {
-    //       el: '.swiper-pagination'
-    //     }
-    //   })
-    //     })
-    //   }
-    // }
   }
 </script>
 
