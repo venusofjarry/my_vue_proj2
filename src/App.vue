@@ -1,6 +1,11 @@
 <template>
   <div>
-    <!-- 这是上面的结构 -->
+    <!-- 使用keep-alive标签缓存路由，使用exclude属性决定不缓存哪个路由
+         当使用了该标签，则该标签内部的路由相互间跳转，一般不会出现加载的状态，因为已经缓存了，简单理解就是为了快
+     -->
+    <!-- <keep-alive exclude="Search">
+      <router-view></router-view>
+    </keep-alive> -->
     <router-view></router-view>
     <FooterGuide v-show="$route.meta.isFooterShow"></FooterGuide>
   </div>

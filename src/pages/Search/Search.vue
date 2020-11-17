@@ -15,7 +15,7 @@
 
 <script type="text/ecmasript-6">
   export default{
-
+    name: 'Search'
   }
 </script>
 

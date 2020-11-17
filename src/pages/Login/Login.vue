@@ -152,7 +152,6 @@
           if (result.code===0) {
             const user = result.data
             // 将user保存到vuex的state.  注意，这里如果使用{user}，则actions.js就不用解构user了，反之亦然
-            console.log(this.$store);
             this.$store.dispatch('saveUser', user) // 将user和token保存到state
 
             // 跳转到个人中心(有一个疑问：为啥路由跳转要放在前端而不是后端服务器呢？？)
@@ -176,6 +175,21 @@
       //   // 将新的语言保存到local
       //   localStorage.setItem('locale_key', locale)
       // }
+    },
+
+    /*
+      该方法在当前组件对象被创建前调用，不能直接访问this(组件都没有，this肯定为undefined)。但是我们可以通过next(() => {})，在回调中访问组件对象
+    */
+    beforeRouteEnter (to, from, next) {
+      next((comp) => { // 这个next方法如果传入了回调，该回调就会在组件对象被创建之后再调用，而且回调函数会传入组件对象作为参数供回调函数使用
+        const token = comp.$store.state.user.token
+        console.log(token)
+        if(token){
+          next('/msite')
+        }else{
+          next()
+        }
+      })
     }
   }
 </script>
